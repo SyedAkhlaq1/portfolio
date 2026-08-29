@@ -14,43 +14,44 @@ import * as THREE from 'three'
 
 function Blob({ dark }) {
   const group = useRef(null)
-  const mat = useRef(null)
-  const { pointer } = useThree()
+  const { pointer, viewport } = useThree()
+
+  // scale down on narrow viewports so it stays a motif, not a wall
+  const s = viewport.width < 6 ? 0.62 : viewport.width < 9 ? 0.82 : 1
 
   useFrame((state, delta) => {
     if (!group.current) return
-    // ease toward the pointer for a parallax tilt
     group.current.rotation.y = THREE.MathUtils.lerp(
       group.current.rotation.y,
-      pointer.x * 0.4,
-      2.2 * delta,
+      pointer.x * 0.3,
+      1.8 * delta,
     )
     group.current.rotation.x = THREE.MathUtils.lerp(
       group.current.rotation.x,
-      -pointer.y * 0.3,
-      2.2 * delta,
+      -pointer.y * 0.2,
+      1.8 * delta,
     )
-    group.current.rotation.z += delta * 0.05
+    group.current.rotation.z += delta * 0.04
   })
 
   return (
-    <Float speed={1.1} rotationIntensity={0.35} floatIntensity={0.9}>
-      <group ref={group}>
-        <mesh scale={1.55}>
-          <icosahedronGeometry args={[1, 14]} />
+    <Float speed={1.2} rotationIntensity={0.3} floatIntensity={0.7}>
+      {/* pushed to the upper-right and back so it sits behind the text */}
+      <group ref={group} position={[2.1, 0.35, -1.4]} scale={s}>
+        <mesh scale={1.35}>
+          <icosahedronGeometry args={[1, 18]} />
           <MeshDistortMaterial
-            ref={mat}
-            color={dark ? '#2a2140' : '#efe7ef'}
-            envMapIntensity={dark ? 1.15 : 1.35}
-            metalness={0.92}
-            roughness={0.16}
+            color={dark ? '#241a38' : '#eee6ef'}
+            envMapIntensity={dark ? 1.1 : 1.3}
+            metalness={0.94}
+            roughness={0.14}
             clearcoat={1}
-            clearcoatRoughness={0.25}
+            clearcoatRoughness={0.28}
             iridescence={1}
-            iridescenceIOR={1.5}
-            iridescenceThicknessRange={[100, 520]}
-            distort={0.34}
-            speed={1.4}
+            iridescenceIOR={1.45}
+            iridescenceThicknessRange={[120, 560]}
+            distort={0.46}
+            speed={1.9}
           />
         </mesh>
       </group>
@@ -59,19 +60,19 @@ function Blob({ dark }) {
 }
 
 function Rig() {
-  // subtle camera drift toward the pointer
+  // very subtle camera drift toward the pointer
   useFrame((state, delta) => {
     state.camera.position.x = THREE.MathUtils.lerp(
       state.camera.position.x,
-      state.pointer.x * 0.35,
-      1.5 * delta,
+      state.pointer.x * 0.18,
+      1.3 * delta,
     )
     state.camera.position.y = THREE.MathUtils.lerp(
       state.camera.position.y,
-      state.pointer.y * 0.25,
-      1.5 * delta,
+      state.pointer.y * 0.12,
+      1.3 * delta,
     )
-    state.camera.lookAt(0, 0, 0)
+    state.camera.lookAt(1.2, 0, 0)
   })
   return null
 }
@@ -106,34 +107,34 @@ export default function HeroScene() {
 
         {/* coloured light-cards = iridescent pastel reflections, no HDRI */}
         <Environment resolution={256} frames={1}>
-          <group rotation={[0, 0, 0]}>
+          <group>
             <Lightformer
               form="circle"
-              intensity={dark ? 2.4 : 3.2}
+              intensity={dark ? 2 : 2.6}
               color="#e7c4d5"
-              position={[-3, 2, 2]}
-              scale={4}
-            />
-            <Lightformer
-              form="circle"
-              intensity={dark ? 2.2 : 3}
-              color="#c6c4ea"
-              position={[3, -1, 3]}
+              position={[-4, 2, 1]}
               scale={5}
             />
             <Lightformer
-              form="ring"
-              intensity={dark ? 1.6 : 2.2}
-              color="#f0d6bd"
-              position={[0, 3, -4]}
+              form="circle"
+              intensity={dark ? 1.8 : 2.4}
+              color="#c6c4ea"
+              position={[4, -1, 2]}
               scale={6}
             />
             <Lightformer
-              form="rect"
-              intensity={dark ? 0.5 : 1}
+              form="ring"
+              intensity={dark ? 1.4 : 1.8}
+              color="#f0d6bd"
+              position={[1, 3, -3]}
+              scale={7}
+            />
+            <Lightformer
+              form="circle"
+              intensity={dark ? 0.4 : 0.7}
               color="#ffffff"
-              position={[0, 0, 5]}
-              scale={8}
+              position={[0, -2, 4]}
+              scale={4}
             />
           </group>
         </Environment>
@@ -141,9 +142,9 @@ export default function HeroScene() {
         <EffectComposer disableNormalPass multisampling={0}>
           <Bloom
             mipmapBlur
-            luminanceThreshold={dark ? 0.35 : 0.55}
-            luminanceSmoothing={0.3}
-            intensity={dark ? 0.9 : 0.6}
+            luminanceThreshold={dark ? 0.6 : 0.82}
+            luminanceSmoothing={0.35}
+            intensity={dark ? 0.55 : 0.3}
           />
         </EffectComposer>
       </Canvas>
