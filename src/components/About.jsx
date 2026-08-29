@@ -17,9 +17,9 @@ export default function About() {
   return (
     <section className="section" id="about" aria-labelledby="about-title">
       <div className="container">
-        <div className="section-head reveal">
-          <span className="eyebrow">01 — Profile</span>
-          <h2 className="section-title" id="about-title">
+        <div className="section-head">
+          <span className="eyebrow reveal">01 — Profile</span>
+          <h2 className="section-title" id="about-title" data-split>
             A developer who thinks in systems, not just screens.
           </h2>
         </div>

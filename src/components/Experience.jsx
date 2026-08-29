@@ -4,9 +4,9 @@ export default function Experience() {
   return (
     <section className="section" id="work" aria-labelledby="work-title">
       <div className="container">
-        <div className="section-head reveal">
-          <span className="eyebrow">03 — Track record</span>
-          <h2 className="section-title" id="work-title">
+        <div className="section-head">
+          <span className="eyebrow reveal">03 — Track record</span>
+          <h2 className="section-title" id="work-title" data-split>
             From training bench to shipping features.
           </h2>
         </div>

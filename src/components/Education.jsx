@@ -4,9 +4,9 @@ export default function Education() {
   return (
     <section className="section section--alt" id="education" aria-labelledby="education-title">
       <div className="container">
-        <div className="section-head reveal">
-          <span className="eyebrow">04 — Foundations</span>
-          <h2 className="section-title" id="education-title">
+        <div className="section-head">
+          <span className="eyebrow reveal">04 — Foundations</span>
+          <h2 className="section-title" id="education-title" data-split>
             Study, certified skills and the work outside the syllabus.
           </h2>
         </div>

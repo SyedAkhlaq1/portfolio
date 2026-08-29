@@ -19,28 +19,41 @@ export default function Projects() {
 
   useScrollReveal([filter, shown.length])
 
-  // Parallax the cover images while the section scrolls past.
+  // Scrub-driven wipe + parallax on each cover image.
   useEffect(() => {
     if (prefersReducedMotion() || !listRef.current) return
     const ctx = gsap.context(() => {
-      gsap.utils.toArray('.project__media img').forEach((img) => {
+      gsap.utils.toArray('.project__media').forEach((media) => {
+        // reveal wipe as it enters
         gsap.fromTo(
-          img,
-          { yPercent: -8 },
+          media,
+          { clipPath: 'inset(0% 0% 100% 0%)' },
           {
-            yPercent: 8,
+            clipPath: 'inset(0% 0% 0% 0%)',
             ease: 'none',
-            scrollTrigger: {
-              trigger: img.closest('.project'),
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true,
-            },
+            scrollTrigger: { trigger: media, start: 'top 92%', end: 'top 52%', scrub: true },
           },
         )
+        // gentle parallax on the image within
+        const img = media.querySelector('img')
+        if (img) {
+          gsap.fromTo(
+            img,
+            { yPercent: -9 },
+            {
+              yPercent: 9,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: media.closest('.project'),
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true,
+              },
+            },
+          )
+        }
       })
     }, listRef)
-    // layout height changes as images decode
     const t = window.setTimeout(() => ScrollTrigger.refresh(), 400)
     return () => {
       window.clearTimeout(t)
@@ -51,9 +64,9 @@ export default function Projects() {
   return (
     <section className="section" id="projects" aria-labelledby="projects-title">
       <div className="container">
-        <div className="section-head reveal">
-          <span className="eyebrow">05 — Selected work</span>
-          <h2 className="section-title" id="projects-title">
+        <div className="section-head">
+          <span className="eyebrow reveal">05 — Selected work</span>
+          <h2 className="section-title" id="projects-title" data-split>
             Three builds, taken end to end.
           </h2>
         </div>
@@ -74,7 +87,7 @@ export default function Projects() {
         <div className="projects__list" ref={listRef}>
           {shown.map((p, i) => (
             <article className="project" data-flip={i % 2 === 1 ? 'true' : undefined} key={p.index}>
-              <div className="project__media reveal" data-cursor="view">
+              <div className="project__media" data-cursor="view">
                 <picture>
                   <source srcSet={`projects/${p.image}.webp`} type="image/webp" />
                   <img

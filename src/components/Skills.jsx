@@ -4,9 +4,9 @@ export default function Skills() {
   return (
     <section className="section section--alt" id="skills" aria-labelledby="skills-title">
       <div className="container">
-        <div className="section-head reveal">
-          <span className="eyebrow">02 — Capabilities</span>
-          <h2 className="section-title" id="skills-title">
+        <div className="section-head">
+          <span className="eyebrow reveal">02 — Capabilities</span>
+          <h2 className="section-title" id="skills-title" data-split>
             The toolkit, grouped by where it earns its keep.
           </h2>
         </div>

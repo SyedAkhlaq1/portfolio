@@ -13,11 +13,20 @@ const LINKS = [
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState('')
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
+    let last = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 24)
+      // hide when scrolling down past the hero, show on any scroll up
+      if (y > 240 && y > last + 6) setHidden(true)
+      else if (y < last - 6) setHidden(false)
+      last = y
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -50,7 +59,12 @@ export default function Nav() {
   }, [open])
 
   return (
-    <header className="nav" data-scrolled={scrolled} data-open={open}>
+    <header
+      className="nav"
+      data-scrolled={scrolled}
+      data-open={open}
+      data-hidden={hidden && !open}
+    >
       <div className="nav__inner">
         <a className="nav__brand" href="#top" onClick={() => setOpen(false)}>
           Syed Akhlaq Hussain<span>Portfolio</span>
