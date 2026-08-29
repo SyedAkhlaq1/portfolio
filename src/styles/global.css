@@ -725,17 +725,22 @@ ul { list-style: none; padding: 0; }
   height: 100%;
   object-fit: cover;
   object-position: center 20%;
-  filter: grayscale(1) contrast(1.05) brightness(1.03);
+  filter: grayscale(1) contrast(1.06) brightness(1.04);
 }
-/* duotone tint — theme-aware, sits the studio photo inside the design */
+:root[data-theme='dark'] .about__portrait img {
+  filter: grayscale(1) contrast(1.02) brightness(1.14);
+}
+/* faint single-tone wash so the B&W photo picks up the site's accent */
 .about__portrait::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(150deg, var(--portrait-a), var(--portrait-b));
-  mix-blend-mode: overlay;
+  background: var(--accent-lav);
+  mix-blend-mode: soft-light;
+  opacity: 0.28;
   pointer-events: none;
 }
+:root[data-theme='dark'] .about__portrait::after { opacity: 0.16; }
 .about__portrait::before {
   content: '';
   position: absolute;
