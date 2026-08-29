@@ -17,8 +17,8 @@ function Orb({ dark, mobile }) {
   const group = useRef(null)
   const { pointer, viewport } = useThree()
 
-  const s = mobile ? 0.72 : viewport.width < 8 ? 0.82 : 1.0
-  const pos = mobile ? [1.35, 1.5, -1.1] : [2.75, 0.05, -0.6]
+  const s = mobile ? 0.6 : viewport.width < 8 ? 0.82 : 1.0
+  const pos = mobile ? [2.55, -0.15, -0.7] : [2.75, 0.05, -0.6]
 
   useFrame((state, delta) => {
     if (!group.current) return
@@ -41,7 +41,7 @@ function Orb({ dark, mobile }) {
           <icosahedronGeometry args={[1, 20]} />
           <MeshDistortMaterial
             color={dark ? '#5f5299' : '#8b7ec9'}
-            envMapIntensity={mobile ? (dark ? 2.4 : 3.1) : dark ? 1.8 : 2.4}
+            envMapIntensity={dark ? 1.8 : 2.4}
             metalness={0.55}
             roughness={0.12}
             clearcoat={1}
@@ -98,7 +98,7 @@ export default function HeroScene() {
         camera={{ position: [0, 0, 5], fov: 42 }}
         frameloop="always"
       >
-        {!mobile && <Rig />}
+        <Rig />
         <ambientLight intensity={dark ? 0.55 : 0.9} />
         <directionalLight position={[3, 4, 5]} intensity={dark ? 0.5 : 0.9} color="#ffffff" />
 
@@ -117,16 +117,14 @@ export default function HeroScene() {
           </group>
         </Environment>
 
-        {!mobile && (
-          <EffectComposer disableNormalPass multisampling={0}>
-            <Bloom
-              mipmapBlur
-              luminanceThreshold={dark ? 0.75 : 0.92}
-              luminanceSmoothing={0.4}
-              intensity={dark ? 0.5 : 0.22}
-            />
-          </EffectComposer>
-        )}
+        <EffectComposer disableNormalPass multisampling={0}>
+          <Bloom
+            mipmapBlur
+            luminanceThreshold={dark ? 0.75 : 0.92}
+            luminanceSmoothing={0.4}
+            intensity={dark ? 0.5 : 0.22}
+          />
+        </EffectComposer>
       </Canvas>
     </div>
   )
