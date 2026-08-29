@@ -524,8 +524,8 @@ ul { list-style: none; padding: 0; }
 }
 @media (max-width: 767px) {
   .hero-scene {
-    -webkit-mask-image: radial-gradient(circle at 73% 52%, black 0%, black 30%, transparent 64%);
-    mask-image: radial-gradient(circle at 73% 52%, black 0%, black 30%, transparent 64%);
+    -webkit-mask-image: radial-gradient(circle at 72% 46%, black 0%, black 22%, transparent 52%);
+    mask-image: radial-gradient(circle at 72% 46%, black 0%, black 22%, transparent 52%);
   }
 }
 

@@ -17,8 +17,8 @@ function Orb({ dark, mobile }) {
   const group = useRef(null)
   const { pointer, viewport } = useThree()
 
-  const s = mobile ? 0.6 : viewport.width < 8 ? 0.82 : 1.0
-  const pos = mobile ? [2.55, -0.15, -0.7] : [2.75, 0.05, -0.6]
+  const s = mobile ? 0.47 : viewport.width < 8 ? 0.82 : 1.0
+  const pos = mobile ? [2.5, 0.1, -0.7] : [2.75, 0.05, -0.6]
 
   useFrame((state, delta) => {
     if (!group.current) return
