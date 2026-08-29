@@ -25,19 +25,35 @@ export default function About() {
         </div>
 
         <div className="about__grid">
-          <div className="about__body reveal" data-reveal-delay="80">
-            <p>{profile.summary}</p>
-            <p>
-              My focus sits where the <strong>front end meets the network</strong> —
-              building interfaces that are fast and reliable, backed by services that
-              handle authentication, sessions, and data with care.
-            </p>
-          </div>
+          <figure className="about__portrait reveal">
+            <picture>
+              <source srcSet="img/portrait.webp" type="image/webp" />
+              <img
+                src="img/portrait.jpg"
+                alt={`Portrait of ${profile.name}`}
+                width="900"
+                height="1125"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+          </figure>
 
-          <div className="stats reveal" data-reveal-delay="140">
-            {stats.map((s) => (
-              <Stat key={s.label} value={s.value} label={s.label} />
-            ))}
+          <div className="about__col">
+            <div className="about__body reveal" data-reveal-delay="80">
+              <p>{profile.summary}</p>
+              <p>
+                My focus sits where the <strong>front end meets the network</strong> —
+                building interfaces that are fast and reliable, backed by services that
+                handle authentication, sessions, and data with care.
+              </p>
+            </div>
+
+            <div className="stats reveal" data-reveal-delay="140">
+              {stats.map((s) => (
+                <Stat key={s.label} value={s.value} label={s.label} />
+              ))}
+            </div>
           </div>
         </div>
       </div>

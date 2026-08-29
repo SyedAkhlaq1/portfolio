@@ -107,6 +107,10 @@ export const projects = [
       'MTech dissertation — a Flask web app that classifies live IoT network traffic into 12 attack types in real time, backed by an ensemble ML model with Explainable AI.',
     stack: ['Python', 'Flask', 'scikit-learn', 'SHAP / LIME', 'MySQL'],
     tags: ['Research', 'Security', 'Machine Learning'],
+    image: 'iot-cover',
+    imageAlt: 'IoT Intrusion Detection landing page with a city skyline and network-shield motifs',
+    repo: null,
+    demo: null,
     points: [
       'Trained and benchmarked eight classifiers (KNN, SVM, Decision Tree, Gradient Boost, XGBoost, Random Forest, Extra Trees, LightGBM) on the RT-IoT2022 dataset.',
       'Built the detection pipeline — XGBoost feature selection, SMOTEENN class balancing, and a soft-voting ensemble of Random Forest, Extra Trees and LightGBM — reaching 99.9% accuracy, precision, recall and F1.',
@@ -117,35 +121,43 @@ export const projects = [
   },
   {
     index: '02',
-    title: 'Secure Two-Factor Authentication (2FA) Login System',
+    title: 'End-to-End Encrypted Team Chat',
     blurb:
-      'A hardened login system with email-based OTP verification, from registration through password reset.',
-    stack: ['HTML', 'CSS', 'Python (Flask)', 'MySQL'],
-    tags: ['Security', 'Backend', 'Auth'],
+      'A real-time chat where every message is encrypted in the browser with libsodium before it leaves — the server only ever stores and relays ciphertext, and cannot read a word of it.',
+    stack: ['React', 'Socket.IO', 'libsodium', 'Python (Flask)', 'JWT', 'SQLite'],
+    tags: ['Real-time', 'Security', 'Full Stack'],
+    image: 'chat-cover',
+    imageAlt: 'Encrypted team chat interface with an online-user sidebar and message bubbles',
+    repo: null,
+    demo: null,
     points: [
-      'Email-based OTP verification layered on top of username / password sign-in.',
-      'User registration with email verification, SHA-256 password hashing and session security.',
-      'OTP generation, validation, resend-OTP and email-driven password reset.',
-      'MySQL-backed user store with secured communication between front-end and back-end.',
+      'Client-side X25519 keypair generated at registration; the private key is written only to that browser and never sent anywhere.',
+      'Each message is encrypted per-recipient with crypto_box and fanned out over Socket.IO — every client receives only its own ciphertext copy, for live messages and history alike.',
+      'JWT-gated socket connections, server-set timestamps, and multi-tab presence (a user goes offline only once their last connection closes).',
+      'Key-recovery flow for a new device, with honest UX around the trade-off — a fresh key orphans messages sent under the old one, like a Signal safety-number reset.',
     ],
   },
   {
     index: '03',
     title: 'Employee Management System',
     blurb:
-      'A React application for managing employee records with a full create / read / update / delete workflow.',
-    stack: ['HTML', 'CSS', 'JavaScript', 'React'],
-    tags: ['Frontend', 'React', 'CRUD'],
+      'A full-stack workforce platform — role-based access for Admin, HR, Manager and Employee, with leave workflows, payroll, analytics dashboards and CSV / PDF exports.',
+    stack: ['JavaScript', 'Chart.js', 'Python (Flask)', 'SQLAlchemy', 'JWT', 'MySQL'],
+    tags: ['Full Stack', 'Backend', 'Frontend'],
+    image: 'ems-cover',
+    imageAlt: 'Employee Management System analytics dashboard with stat cards and charts',
+    repo: null,
+    demo: null,
     points: [
-      'Full CRUD operations over employee information.',
-      'Intuitive UI components for adding, editing, viewing and deleting records.',
-      'Efficient state management with React Hooks for smooth, predictable updates.',
-      'Reduces manual record-keeping and streamlines day-to-day workflow.',
+      'JWT auth with four roles, each seeing different data — enforced server-side, not just hidden in the UI: Admin and HR see everyone, Managers their department, Employees only themselves.',
+      'Employee CRUD with soft delete, photo upload and audit logging; real-time search, multi-field filtering, sorting and saved filter presets.',
+      'Analytics dashboard in Chart.js — headcount, salary distribution, hiring trends and age distribution.',
+      'Leave request/approval workflow with per-employee balances, payroll calculation with PDF salary slips, department budgets, and CSV / PDF report exports.',
     ],
   },
 ]
 
-export const projectFilters = ['All', 'Research', 'Security', 'Frontend', 'Backend']
+export const projectFilters = ['All', 'Security', 'Full Stack', 'Real-time', 'Research']
 
 export const education = [
   {
