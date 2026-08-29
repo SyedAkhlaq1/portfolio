@@ -17,8 +17,8 @@ function Orb({ dark, mobile }) {
   const group = useRef(null)
   const { pointer, viewport } = useThree()
 
-  const s = mobile ? 0.62 : viewport.width < 8 ? 0.82 : 1.0
-  const pos = mobile ? [1.7, 2.9, -1.6] : [2.75, 0.05, -0.6]
+  const s = mobile ? 0.72 : viewport.width < 8 ? 0.82 : 1.0
+  const pos = mobile ? [1.35, 1.5, -1.1] : [2.75, 0.05, -0.6]
 
   useFrame((state, delta) => {
     if (!group.current) return
@@ -41,7 +41,7 @@ function Orb({ dark, mobile }) {
           <icosahedronGeometry args={[1, 20]} />
           <MeshDistortMaterial
             color={dark ? '#5f5299' : '#8b7ec9'}
-            envMapIntensity={dark ? 1.8 : 2.4}
+            envMapIntensity={mobile ? (dark ? 2.4 : 3.1) : dark ? 1.8 : 2.4}
             metalness={0.55}
             roughness={0.12}
             clearcoat={1}
