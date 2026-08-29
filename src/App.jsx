@@ -11,6 +11,8 @@ import Education from './components/Education.jsx'
 import Contact from './components/Contact.jsx'
 import Grain from './components/Grain.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
+import Cursor from './components/Cursor.jsx'
+import ScrollProgress from './components/ScrollProgress.jsx'
 import { useSmoothScroll } from './hooks/useSmoothScroll.js'
 import { useScrollReveal } from './hooks/useScrollReveal.js'
 import { useTheme } from './hooks/useTheme.js'
@@ -32,6 +34,8 @@ export default function App() {
     <>
       <Loader onDone={() => setStarted(true)} />
       <Grain />
+      <ScrollProgress />
+      <Cursor />
       <ThemeToggle theme={theme} onToggle={toggle} />
 
       <a className="skip-link" href="#about">

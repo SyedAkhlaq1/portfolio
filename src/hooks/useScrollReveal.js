@@ -2,21 +2,27 @@ import { useEffect } from 'react'
 import { prefersReducedMotion } from '../lib/env.js'
 
 /**
- * One shared IntersectionObserver for every `.reveal` element, with hard
- * guarantees that content becomes visible even if the observer never
- * fires (reduced motion, no IO support, a background/hidden tab, etc.).
+ * Shared IntersectionObserver for `.reveal` elements.
  *
- * `deps` lets callers re-scan after the DOM changes (e.g. project filter).
+ * Reveal styles only apply when <html> has the `reveal-armed` class,
+ * which this hook adds *only* after confirming IO is usable. So if JS or
+ * IO is unavailable, or motion is reduced, nothing is ever hidden — the
+ * page just renders normally. A long backstop also disarms as a safety.
+ *
+ * Children of `[data-reveal-stagger]` reveal one after another.
+ * `deps` re-scans after DOM changes (e.g. project filter).
  */
 export function useScrollReveal(deps = []) {
   useEffect(() => {
-    const revealAll = () =>
-      document.querySelectorAll('.reveal:not(.is-in)').forEach((n) => n.classList.add('is-in'))
+    const root = document.documentElement
+    const disarm = () => root.classList.remove('reveal-armed')
 
     if (prefersReducedMotion() || typeof IntersectionObserver === 'undefined') {
-      revealAll()
+      disarm()
       return
     }
+
+    root.classList.add('reveal-armed')
 
     const nodes = document.querySelectorAll('.reveal:not(.is-in)')
     if (!nodes.length) return
@@ -26,29 +32,30 @@ export function useScrollReveal(deps = []) {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return
           const el = entry.target
+          io.unobserve(el)
+
+          const parent = el.closest('[data-reveal-stagger]')
+          if (parent && !parent.dataset.revealFired) {
+            parent.dataset.revealFired = '1'
+            parent.querySelectorAll('.reveal').forEach((k, i) => {
+              window.setTimeout(() => k.classList.add('is-in'), i * 90)
+              io.unobserve(k)
+            })
+            return
+          }
           const delay = Number(el.dataset.revealDelay || 0)
           window.setTimeout(() => el.classList.add('is-in'), delay)
-          io.unobserve(el)
         })
       },
-      { rootMargin: '0px 0px -10% 0px', threshold: 0.12 },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.15 },
     )
     nodes.forEach((n) => io.observe(n))
 
-    // Failsafe 1: if the tab is hidden, nobody sees the animation anyway —
-    // just show everything so content is never stuck invisible.
-    const onVisibility = () => {
-      if (document.visibilityState === 'hidden') revealAll()
-    }
-    onVisibility()
-    document.addEventListener('visibilitychange', onVisibility)
-
-    // Failsafe 2: absolute backstop.
-    const guard = window.setTimeout(revealAll, 6000)
+    // Backstop: if the observer somehow never fires, stop hiding content.
+    const guard = window.setTimeout(disarm, 9000)
 
     return () => {
       io.disconnect()
-      document.removeEventListener('visibilitychange', onVisibility)
       window.clearTimeout(guard)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

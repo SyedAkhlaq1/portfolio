@@ -1,4 +1,17 @@
 import { profile, stats } from '../data/content.js'
+import { useCountUp } from '../hooks/useCountUp.js'
+
+function Stat({ value, label }) {
+  const [display, ref] = useCountUp(value)
+  return (
+    <div className="stat">
+      <div className="stat__value" ref={ref}>
+        {display}
+      </div>
+      <div className="stat__label">{label}</div>
+    </div>
+  )
+}
 
 export default function About() {
   return (
@@ -23,10 +36,7 @@ export default function About() {
 
           <div className="stats reveal" data-reveal-delay="140">
             {stats.map((s) => (
-              <div className="stat" key={s.label}>
-                <div className="stat__value">{s.value}</div>
-                <div className="stat__label">{s.label}</div>
-              </div>
+              <Stat key={s.label} value={s.value} label={s.label} />
             ))}
           </div>
         </div>
