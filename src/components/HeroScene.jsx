@@ -36,19 +36,19 @@ function Orb({ dark }) {
 
   return (
     <Float speed={1.3} rotationIntensity={0.25} floatIntensity={0.6}>
-      <group ref={group} position={[2.3, 0.5, -0.6]} scale={s}>
+      <group ref={group} position={[2.3, 0.45, -0.6]} scale={s}>
         <mesh>
           <icosahedronGeometry args={[1, 20]} />
           <MeshDistortMaterial
-            color={dark ? '#b9b2e0' : '#efe9f4'}
-            envMapIntensity={dark ? 1.4 : 1.8}
-            metalness={0.2}
-            roughness={0.14}
+            color={dark ? '#5f5299' : '#8b7ec9'}
+            envMapIntensity={dark ? 1.8 : 2.4}
+            metalness={0.55}
+            roughness={0.12}
             clearcoat={1}
-            clearcoatRoughness={0.18}
+            clearcoatRoughness={0.16}
             iridescence={1}
-            iridescenceIOR={1.32}
-            iridescenceThicknessRange={[80, 780]}
+            iridescenceIOR={1.35}
+            iridescenceThicknessRange={[120, 1000]}
             distort={0.4}
             speed={1.8}
           />
@@ -103,13 +103,16 @@ export default function HeroScene() {
 
         <Orb dark={dark} />
 
-        {/* big, soft coloured cards → even pastel reflections, no HDRI */}
+        {/* coloured cards → iridescent pastel reflections + one dark card
+            so the orb keeps its form and doesn't wash out (no HDRI) */}
         <Environment resolution={128} frames={1}>
           <group>
-            <Lightformer form="rect" intensity={dark ? 1.1 : 1.6} color="#e7c4d5" position={[-5, 3, 2]} scale={[8, 6, 1]} />
-            <Lightformer form="rect" intensity={dark ? 1 : 1.5} color="#c6c4ea" position={[5, -2, 3]} scale={[8, 6, 1]} />
-            <Lightformer form="rect" intensity={dark ? 0.8 : 1.2} color="#f0d6bd" position={[0, 5, -4]} scale={[10, 5, 1]} />
-            <Lightformer form="rect" intensity={dark ? 0.5 : 0.9} color="#ffffff" position={[0, 0, 6]} scale={[10, 10, 1]} />
+            <Lightformer form="rect" intensity={2.4} color="#e7a9c8" position={[-5, 3, 2]} scale={[7, 6, 1]} />
+            <Lightformer form="rect" intensity={2.2} color="#9d9bec" position={[5, -2, 3]} scale={[7, 6, 1]} />
+            <Lightformer form="rect" intensity={1.8} color="#f0cfa8" position={[0, 5, -4]} scale={[9, 5, 1]} />
+            <Lightformer form="rect" intensity={1.4} color="#ffffff" position={[0, 1, 6]} scale={[8, 8, 1]} />
+            {/* dark card = a shadowed side, gives the sphere volume */}
+            <Lightformer form="rect" intensity={0.06} color="#120c1e" position={[-4, -4, -3]} scale={[9, 9, 1]} />
           </group>
         </Environment>
 
