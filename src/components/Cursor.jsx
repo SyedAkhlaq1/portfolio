@@ -49,8 +49,8 @@ export default function Cursor() {
     }
 
     const loop = () => {
-      rx += (mx - rx) * 0.18
-      ry += (my - ry) * 0.18
+      rx += (mx - rx) * 0.35
+      ry += (my - ry) * 0.35
       ring.style.transform = `translate(${rx}px, ${ry}px)`
       raf = requestAnimationFrame(loop)
     }
