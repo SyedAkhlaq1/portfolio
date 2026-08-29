@@ -93,8 +93,8 @@ export default function HeroScene() {
   return (
     <div className="hero-scene" aria-hidden="true">
       <Canvas
-        dpr={[1, mobile ? 1.3 : 1.75]}
-        gl={{ antialias: !mobile, alpha: true, powerPreference: 'high-performance' }}
+        dpr={[1, 2]}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         camera={{ position: [0, 0, 5], fov: 42 }}
         frameloop="always"
       >
