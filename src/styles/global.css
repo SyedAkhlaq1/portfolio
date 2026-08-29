@@ -472,16 +472,20 @@ ul { list-style: none; padding: 0; }
   100% { transform: translate3d(-5%, 4%, 0) scale(1.12); }
 }
 
-/* Interactive constellation canvas */
-.particle-field {
+/* WebGL hero scene */
+.hero-scene {
   position: absolute;
   inset: 0;
   z-index: 1;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.hero-scene > div {
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  -webkit-mask-image: radial-gradient(circle at 65% 42%, black, transparent 78%);
-  mask-image: radial-gradient(circle at 65% 42%, black, transparent 78%);
+}
+.hero-scene canvas {
+  display: block;
 }
 
 .hero__inner {
@@ -1184,42 +1188,51 @@ ul { list-style: none; padding: 0; }
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: var(--bg);
+  background: var(--bg-deep, #17150f);
+  color: var(--on-deep, #f3f0ea);
   display: grid;
   place-items: center;
-  transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+  transform: translateY(0);
+  transition: transform 1s cubic-bezier(0.76, 0, 0.24, 1);
 }
-.loader[data-done='true'] { opacity: 0; visibility: hidden; }
+:root[data-theme='dark'] .loader { background: #0f0b17; }
+.loader[data-done='true'] {
+  transform: translateY(-101%);
+}
 .loader__inner {
   text-align: center;
   font-family: var(--font-mono);
   font-size: var(--step--1);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--ink-mute);
+  color: var(--on-deep-soft, #b7b2a4);
+  transition: opacity 0.4s var(--ease-out);
 }
+.loader[data-done='true'] .loader__inner { opacity: 0; }
 .loader__count {
   font-family: var(--font-display);
-  font-size: var(--step-4);
-  color: var(--ink);
+  font-size: var(--step-5);
+  color: #f3f0ea;
   letter-spacing: -0.02em;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 .loader__bar {
-  margin-top: var(--space-s);
-  width: min(220px, 60vw);
+  margin-top: var(--space-m);
+  width: min(280px, 62vw);
   height: 1px;
-  background: var(--line-strong);
+  background: rgba(243, 240, 234, 0.2);
   position: relative;
   overflow: hidden;
+  margin-inline: auto;
 }
 .loader__bar::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--ink);
+  background: linear-gradient(90deg, var(--accent-lav), var(--accent-rose), var(--accent-peach));
   transform: scaleX(var(--p, 0));
   transform-origin: left;
   transition: transform 0.3s linear;

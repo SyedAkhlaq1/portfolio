@@ -9,5 +9,6 @@ export default defineConfig({
   build: {
     target: 'es2019',
     cssCodeSplit: true,
+    chunkSizeWarningLimit: 1100, // the lazy Three.js hero chunk is expected to be large
   },
 })

@@ -1,13 +1,15 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { profile } from '../data/content.js'
 import { useMagnetic } from '../hooks/useMagnetic.js'
-import { prefersReducedMotion } from '../lib/env.js'
-import ParticleField from './ParticleField.jsx'
+import { prefersReducedMotion, canRun3D } from '../lib/env.js'
 import { ArrowUpRight, Download, ArrowDown } from './icons.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const HeroScene = lazy(() => import('./HeroScene.jsx'))
+const SHOW_3D = canRun3D()
 
 const TITLE_LINES = [
   <>Full&#8288;-&#8288;stack</>,
@@ -35,7 +37,7 @@ export default function Hero({ start }) {
     gsap.set(root.querySelectorAll('.hero__eyebrow, .hero__role'), { yPercent: 100 })
     gsap.set(root.querySelectorAll('.hero__actions > *'), { y: 26 })
     gsap.set(root.querySelectorAll('.hero__title .line > span'), { yPercent: 118 })
-    gsap.set(root.querySelector('.particle-field'), { opacity: 0 })
+    gsap.set(root.querySelector('.hero-scene, .hero__orb'), { opacity: 0 })
   }, [])
 
   // Entrance choreography — runs once the loader hands off.
@@ -52,20 +54,20 @@ export default function Hero({ start }) {
           done = true
         },
       })
-      tl.to('.hero__eyebrow', { yPercent: 0, opacity: 1, duration: 0.7 })
+      tl.to('.hero__orb, .hero-scene', { opacity: 1, duration: 1.8 }, 0)
+        .to('.hero__eyebrow', { yPercent: 0, opacity: 1, duration: 0.7 }, 0.1)
         .to(
           '.hero__title .line > span',
-          { yPercent: 0, duration: 1.1, stagger: 0.09 },
+          { yPercent: 0, duration: 1.15, stagger: 0.09 },
           '-=0.35',
         )
-        .to('.hero__role', { yPercent: 0, opacity: 1, duration: 0.7 }, '-=0.7')
+        .to('.hero__role', { yPercent: 0, opacity: 1, duration: 0.7 }, '-=0.75')
         .to(
           '.hero__actions > *',
           { y: 0, opacity: 1, duration: 0.6, stagger: 0.08 },
           '-=0.5',
         )
         .to('.hero__scroll', { opacity: 1, duration: 0.6 }, '-=0.3')
-        .to('.particle-field', { opacity: 1, duration: 1.6 }, 0)
     }, root)
 
     // Failsafe: if GSAP's ticker was paused (tab loaded hidden) and never
@@ -74,12 +76,12 @@ export default function Hero({ start }) {
       if (done) return
       gsap.set(
         root.querySelectorAll(
-          '.hero__eyebrow, .hero__role, .hero__actions > *, .hero__scroll, .particle-field',
+          '.hero__eyebrow, .hero__role, .hero__actions > *, .hero__scroll, .hero__orb, .hero-scene',
         ),
         { opacity: 1, clearProps: 'transform' },
       )
       gsap.set(root.querySelectorAll('.hero__title .line > span'), { yPercent: 0 })
-    }, 4000)
+    }, 4200)
 
     return () => {
       window.clearTimeout(guard)
@@ -98,8 +100,8 @@ export default function Hero({ start }) {
         scrub: 0.6,
       }
       if (orbRef.current) gsap.to(orbRef.current, { yPercent: 22, ease: 'none', scrollTrigger: st })
-      gsap.to('.hero__inner', { yPercent: 14, opacity: 0.35, ease: 'none', scrollTrigger: st })
-      gsap.to('.particle-field', { opacity: 0.25, ease: 'none', scrollTrigger: st })
+      gsap.to('.hero__inner', { yPercent: 16, opacity: 0.2, ease: 'none', scrollTrigger: st })
+      gsap.to('.hero-scene', { yPercent: 12, opacity: 0.15, ease: 'none', scrollTrigger: st })
     }, rootRef)
     return () => ctx.revert()
   }, [])
@@ -107,23 +109,27 @@ export default function Hero({ start }) {
   return (
     <section className="hero" id="top" ref={rootRef}>
       <div className="hero__orb" ref={orbRef} aria-hidden="true" />
-      <ParticleField />
+      {SHOW_3D && (
+        <Suspense fallback={null}>
+          <HeroScene />
+        </Suspense>
+      )}
 
       <div className="container hero__inner">
-        <p className="eyebrow hero__eyebrow" data-in>
+        <p className="eyebrow hero__eyebrow">
           {profile.name} &nbsp;/&nbsp; {profile.location}
         </p>
 
         <h1 className="hero__title">
           {TITLE_LINES.map((line, i) => (
-            <span className="line" key={i} data-in>
+            <span className="line" key={i}>
               <span>{line}</span>
             </span>
           ))}
         </h1>
 
         <div className="hero__sub">
-          <p className="hero__role" data-in>
+          <p className="hero__role">
             <strong>Full Stack Web Developer</strong>
           </p>
 
@@ -133,7 +139,6 @@ export default function Hero({ start }) {
               className="btn btn--primary"
               href={`mailto:${profile.email}`}
               data-cursor="write"
-              data-in
             >
               Get in touch <ArrowUpRight />
             </a>
@@ -143,7 +148,6 @@ export default function Hero({ start }) {
               href={profile.resume}
               download
               data-cursor="download"
-              data-in
             >
               <Download /> Resume
             </a>
@@ -151,7 +155,7 @@ export default function Hero({ start }) {
         </div>
       </div>
 
-      <a className="hero__scroll" href="#about" aria-label="Scroll to about section" data-in>
+      <a className="hero__scroll" href="#about" aria-label="Scroll to about section">
         <span className="dot">
           <ArrowDown width={14} height={14} />
         </span>

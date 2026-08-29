@@ -28,10 +28,11 @@ export default function Loader({ onDone }) {
       if (barRef.current) barRef.current.style.setProperty('--p', '1')
       setDone(true)
       document.documentElement.classList.remove('js-loading')
-      window.setTimeout(() => onDone?.(), reduced ? 40 : 560)
-      // Remove from the DOM after the fade so a stalled CSS transition
-      // can never leave the overlay covering the page.
-      window.setTimeout(() => setGone(true), reduced ? 250 : 900)
+      // Fire the hero entrance a beat before the curtain finishes rising,
+      // so it animates in behind the lift.
+      window.setTimeout(() => onDone?.(), reduced ? 40 : 320)
+      // Remove from the DOM once the curtain transition is done.
+      window.setTimeout(() => setGone(true), reduced ? 250 : 1150)
     }
 
     const tick = (now) => {
