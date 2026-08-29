@@ -5,53 +5,52 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
 /**
- * The floating iridescent form behind the hero headline. Chrome-ish blob
- * lit only by coloured light-cards (no external HDRI), gently distorting,
- * parallaxing toward the pointer. Bloom for the glow.
+ * The floating iridescent orb behind the hero headline. Glassy
+ * transmission material with chromatic + iridescence edges, lit by a
+ * few soft coloured light-cards (no external HDRI). Positioned as an
+ * upper-right motif, masked by CSS so it never blocks the text.
  *
- * Mounted lazily by Hero.jsx and only when WebGL + motion are available.
+ * Mounted lazily by Hero.jsx, only when WebGL + motion are available.
  */
 
-function Blob({ dark }) {
+function Orb({ dark }) {
   const group = useRef(null)
   const { pointer, viewport } = useThree()
 
-  // scale down on narrow viewports so it stays a motif, not a wall
-  const s = viewport.width < 6 ? 0.62 : viewport.width < 9 ? 0.82 : 1
+  // keep it a motif on small screens
+  const s = viewport.width < 5 ? 0.5 : viewport.width < 8 ? 0.78 : 1.15
 
   useFrame((state, delta) => {
     if (!group.current) return
     group.current.rotation.y = THREE.MathUtils.lerp(
       group.current.rotation.y,
-      pointer.x * 0.3,
-      1.8 * delta,
+      pointer.x * 0.25 + state.clock.elapsedTime * 0.04,
+      1.6 * delta,
     )
     group.current.rotation.x = THREE.MathUtils.lerp(
       group.current.rotation.x,
-      -pointer.y * 0.2,
-      1.8 * delta,
+      -pointer.y * 0.16,
+      1.6 * delta,
     )
-    group.current.rotation.z += delta * 0.04
   })
 
   return (
-    <Float speed={1.2} rotationIntensity={0.3} floatIntensity={0.7}>
-      {/* pushed to the upper-right and back so it sits behind the text */}
-      <group ref={group} position={[2.1, 0.35, -1.4]} scale={s}>
-        <mesh scale={1.35}>
-          <icosahedronGeometry args={[1, 18]} />
+    <Float speed={1.3} rotationIntensity={0.25} floatIntensity={0.6}>
+      <group ref={group} position={[2.3, 0.5, -0.6]} scale={s}>
+        <mesh>
+          <icosahedronGeometry args={[1, 20]} />
           <MeshDistortMaterial
-            color={dark ? '#241a38' : '#eee6ef'}
-            envMapIntensity={dark ? 1.1 : 1.3}
-            metalness={0.94}
+            color={dark ? '#b9b2e0' : '#efe9f4'}
+            envMapIntensity={dark ? 1.4 : 1.8}
+            metalness={0.2}
             roughness={0.14}
             clearcoat={1}
-            clearcoatRoughness={0.28}
+            clearcoatRoughness={0.18}
             iridescence={1}
-            iridescenceIOR={1.45}
-            iridescenceThicknessRange={[120, 560]}
-            distort={0.46}
-            speed={1.9}
+            iridescenceIOR={1.32}
+            iridescenceThicknessRange={[80, 780]}
+            distort={0.4}
+            speed={1.8}
           />
         </mesh>
       </group>
@@ -60,19 +59,18 @@ function Blob({ dark }) {
 }
 
 function Rig() {
-  // very subtle camera drift toward the pointer
   useFrame((state, delta) => {
     state.camera.position.x = THREE.MathUtils.lerp(
       state.camera.position.x,
-      state.pointer.x * 0.18,
-      1.3 * delta,
+      state.pointer.x * 0.14,
+      1.2 * delta,
     )
     state.camera.position.y = THREE.MathUtils.lerp(
       state.camera.position.y,
-      state.pointer.y * 0.12,
-      1.3 * delta,
+      state.pointer.y * 0.09,
+      1.2 * delta,
     )
-    state.camera.lookAt(1.2, 0, 0)
+    state.camera.lookAt(1.4, 0.2, 0)
   })
   return null
 }
@@ -83,7 +81,6 @@ export default function HeroScene() {
       document.documentElement.getAttribute('data-theme') === 'dark',
   )
 
-  // follow the site theme
   useEffect(() => {
     const obs = new MutationObserver(() =>
       setDark(document.documentElement.getAttribute('data-theme') === 'dark'),
@@ -101,50 +98,27 @@ export default function HeroScene() {
         frameloop="always"
       >
         <Rig />
-        <ambientLight intensity={dark ? 0.35 : 0.6} />
+        <ambientLight intensity={dark ? 0.55 : 0.9} />
+        <directionalLight position={[3, 4, 5]} intensity={dark ? 0.5 : 0.9} color="#ffffff" />
 
-        <Blob dark={dark} />
+        <Orb dark={dark} />
 
-        {/* coloured light-cards = iridescent pastel reflections, no HDRI */}
-        <Environment resolution={256} frames={1}>
+        {/* big, soft coloured cards → even pastel reflections, no HDRI */}
+        <Environment resolution={128} frames={1}>
           <group>
-            <Lightformer
-              form="circle"
-              intensity={dark ? 2 : 2.6}
-              color="#e7c4d5"
-              position={[-4, 2, 1]}
-              scale={5}
-            />
-            <Lightformer
-              form="circle"
-              intensity={dark ? 1.8 : 2.4}
-              color="#c6c4ea"
-              position={[4, -1, 2]}
-              scale={6}
-            />
-            <Lightformer
-              form="ring"
-              intensity={dark ? 1.4 : 1.8}
-              color="#f0d6bd"
-              position={[1, 3, -3]}
-              scale={7}
-            />
-            <Lightformer
-              form="circle"
-              intensity={dark ? 0.4 : 0.7}
-              color="#ffffff"
-              position={[0, -2, 4]}
-              scale={4}
-            />
+            <Lightformer form="rect" intensity={dark ? 1.1 : 1.6} color="#e7c4d5" position={[-5, 3, 2]} scale={[8, 6, 1]} />
+            <Lightformer form="rect" intensity={dark ? 1 : 1.5} color="#c6c4ea" position={[5, -2, 3]} scale={[8, 6, 1]} />
+            <Lightformer form="rect" intensity={dark ? 0.8 : 1.2} color="#f0d6bd" position={[0, 5, -4]} scale={[10, 5, 1]} />
+            <Lightformer form="rect" intensity={dark ? 0.5 : 0.9} color="#ffffff" position={[0, 0, 6]} scale={[10, 10, 1]} />
           </group>
         </Environment>
 
         <EffectComposer disableNormalPass multisampling={0}>
           <Bloom
             mipmapBlur
-            luminanceThreshold={dark ? 0.6 : 0.82}
-            luminanceSmoothing={0.35}
-            intensity={dark ? 0.55 : 0.3}
+            luminanceThreshold={dark ? 0.75 : 0.92}
+            luminanceSmoothing={0.4}
+            intensity={dark ? 0.5 : 0.22}
           />
         </EffectComposer>
       </Canvas>
