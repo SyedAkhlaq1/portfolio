@@ -13,11 +13,12 @@ import * as THREE from 'three'
  * Mounted lazily by Hero.jsx, only when WebGL + motion are available.
  */
 
-function Orb({ dark }) {
+function Orb({ dark, mobile }) {
   const group = useRef(null)
   const { pointer, viewport } = useThree()
 
-  const s = viewport.width < 8 ? 0.82 : 1.0
+  const s = mobile ? 0.62 : viewport.width < 8 ? 0.82 : 1.0
+  const pos = mobile ? [1.7, 2.9, -1.6] : [2.75, 0.05, -0.6]
 
   useFrame((state, delta) => {
     if (!group.current) return
@@ -35,7 +36,7 @@ function Orb({ dark }) {
 
   return (
     <Float speed={1.3} rotationIntensity={0.25} floatIntensity={0.6}>
-      <group ref={group} position={[2.75, 0.05, -0.6]} scale={s}>
+      <group ref={group} position={pos} scale={s}>
         <mesh>
           <icosahedronGeometry args={[1, 20]} />
           <MeshDistortMaterial
@@ -75,6 +76,7 @@ function Rig() {
 }
 
 export default function HeroScene() {
+  const mobile = typeof window !== 'undefined' && window.innerWidth < 768
   const [dark, setDark] = useState(
     typeof document !== 'undefined' &&
       document.documentElement.getAttribute('data-theme') === 'dark',
@@ -91,16 +93,16 @@ export default function HeroScene() {
   return (
     <div className="hero-scene" aria-hidden="true">
       <Canvas
-        dpr={[1, 1.75]}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        dpr={[1, mobile ? 1.3 : 1.75]}
+        gl={{ antialias: !mobile, alpha: true, powerPreference: 'high-performance' }}
         camera={{ position: [0, 0, 5], fov: 42 }}
         frameloop="always"
       >
-        <Rig />
+        {!mobile && <Rig />}
         <ambientLight intensity={dark ? 0.55 : 0.9} />
         <directionalLight position={[3, 4, 5]} intensity={dark ? 0.5 : 0.9} color="#ffffff" />
 
-        <Orb dark={dark} />
+        <Orb dark={dark} mobile={mobile} />
 
         {/* coloured cards → iridescent pastel reflections + one dark card
             so the orb keeps its form and doesn't wash out (no HDRI) */}
@@ -115,14 +117,16 @@ export default function HeroScene() {
           </group>
         </Environment>
 
-        <EffectComposer disableNormalPass multisampling={0}>
-          <Bloom
-            mipmapBlur
-            luminanceThreshold={dark ? 0.75 : 0.92}
-            luminanceSmoothing={0.4}
-            intensity={dark ? 0.5 : 0.22}
-          />
-        </EffectComposer>
+        {!mobile && (
+          <EffectComposer disableNormalPass multisampling={0}>
+            <Bloom
+              mipmapBlur
+              luminanceThreshold={dark ? 0.75 : 0.92}
+              luminanceSmoothing={0.4}
+              intensity={dark ? 0.5 : 0.22}
+            />
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   )

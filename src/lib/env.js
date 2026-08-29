@@ -24,13 +24,11 @@ export const hasWebGL = () => {
 }
 
 // Rough "is this device beefy enough for the 3D hero" guess.
-// Also desktop-only — on phones the CSS gradient hero is used instead.
 export const canRun3D = () => {
   if (prefersReducedMotion() || !hasWebGL()) return false
-  if (typeof window !== 'undefined' && window.innerWidth < 900) return false
   const mem = navigator.deviceMemory || 4
   const cores = navigator.hardwareConcurrency || 4
-  if (mem && mem < 4) return false
+  if (mem && mem < 3) return false
   if (cores && cores < 4) return false
   return true
 }
