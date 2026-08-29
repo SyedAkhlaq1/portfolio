@@ -17,8 +17,7 @@ function Orb({ dark }) {
   const group = useRef(null)
   const { pointer, viewport } = useThree()
 
-  // keep it a motif on small screens
-  const s = viewport.width < 5 ? 0.5 : viewport.width < 8 ? 0.78 : 1.15
+  const s = viewport.width < 8 ? 0.82 : 1.0
 
   useFrame((state, delta) => {
     if (!group.current) return
@@ -36,7 +35,7 @@ function Orb({ dark }) {
 
   return (
     <Float speed={1.3} rotationIntensity={0.25} floatIntensity={0.6}>
-      <group ref={group} position={[2.3, 0.45, -0.6]} scale={s}>
+      <group ref={group} position={[2.75, 0.05, -0.6]} scale={s}>
         <mesh>
           <icosahedronGeometry args={[1, 20]} />
           <MeshDistortMaterial
@@ -70,7 +69,7 @@ function Rig() {
       state.pointer.y * 0.09,
       1.2 * delta,
     )
-    state.camera.lookAt(1.4, 0.2, 0)
+    state.camera.lookAt(1.7, 0.1, 0)
   })
   return null
 }

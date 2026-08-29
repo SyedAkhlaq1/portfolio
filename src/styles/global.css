@@ -479,21 +479,20 @@ ul { list-style: none; padding: 0; }
   z-index: 1;
   pointer-events: none;
   will-change: transform, opacity;
-  /* keep the form concentrated toward the upper-right so it never
-     sits under the headline mass on the left */
+  /* concentrate the orb in the right column, fading before the text */
   -webkit-mask-image: radial-gradient(
-    circle at 84% 28%,
+    circle at 79% 47%,
     black 0%,
-    black 24%,
-    rgba(0, 0, 0, 0.3) 46%,
-    transparent 64%
+    black 30%,
+    rgba(0, 0, 0, 0.3) 52%,
+    transparent 68%
   );
   mask-image: radial-gradient(
-    circle at 84% 28%,
+    circle at 79% 47%,
     black 0%,
-    black 24%,
-    rgba(0, 0, 0, 0.3) 46%,
-    transparent 64%
+    black 30%,
+    rgba(0, 0, 0, 0.3) 52%,
+    transparent 68%
   );
 }
 .hero-scene > div {
@@ -521,11 +520,14 @@ ul { list-style: none; padding: 0; }
 .hero__title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: var(--step-5);
-  line-height: 0.98;
+  font-size: clamp(2.9rem, 1.7rem + 4.8vw, 5.2rem);
+  line-height: 1;
   letter-spacing: -0.025em;
   position: relative;
   z-index: 2;
+}
+@media (min-width: 900px) {
+  .hero__title { max-width: 64%; }
 }
 .hero__title .line {
   display: block;
